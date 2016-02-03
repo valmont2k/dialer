@@ -154,14 +154,14 @@ $sqlc="CREATE TABLE `$CampaignName` (
 		fclose($handle);
  
 		
-		exec("mkdir /usr/share/asterisk/agi-bin/DialerCamps/${CampaignName}");
-		exec("mkdir /usr/share/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds");
+		exec("mkdir /var/lib/asterisk/agi-bin/DialerCamps/${CampaignName}");
+		exec("mkdir /var/lib/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds");
 		
-		$target_Path1 = "/usr/share/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds/";
+		$target_Path1 = "/var/lib/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds/";
 		$target_Path1 = $target_Path1.basename( $_FILES['Aud1']['name'] );
 		move_uploaded_file( $_FILES['Aud1']['tmp_name'], $target_Path1 );
 
-		$target_Path2 = "/usr/share/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds/";
+		$target_Path2 = "/var/lib/asterisk/agi-bin/DialerCamps/${CampaignName}/sounds/";
 		$target_Path2 = $target_Path2.basename( $_FILES['Aud2']['name'] );
 
 		move_uploaded_file( $_FILES['Aud2']['tmp_name'], $target_Path2 );

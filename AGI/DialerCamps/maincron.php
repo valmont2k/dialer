@@ -9,7 +9,7 @@ echo $campname;
 
 /************* Verificamos que los Archivos Call que existen en el Spool de nuestra*****************/ 
 /************* campania se hayan ejecutado al menos una vez para mover los demas archivos **********/
-//$exist=exec("ls -lha /var/spool/asterisk/outgoing/*" .$campname. "* | grep -c call");
+//$exist=exec("ls -lha /var/spool/asterisk/outgoing/ |grep " .$campname. " | grep -c call");
 $exist=exec("grep -c 'StartRetry' *" .$campname. "* | wc -w");
 
 /************ Si ningun archivo ha sido ejecutado por el spool no enviamos mas llamdas ***********/
@@ -18,13 +18,14 @@ if($exist == 0){
 }else{
 
 /************ Conexion a la BD ****************/	
-require_once("/usr/share/asterisk/agi-bin/DialCamp/config.php");
+require_once("/var/lib/asterisk/agi-bin/DialerCamps/config.php");
 $range=0;
 $link = mysql_connect($host,$user,$pass) or die(mysql_error());
 mysql_select_db($db, $link);
 
 
 /********************* Obtenemos el ultimo ID de la campania *******************/
+//здесь он вычисляет количество записей в базе всего
 	$sql1="SELECT ID from " .$campname. " ORDER BY ID DESC LIMIT 1";
         $res=mysql_query($sql1,$link) or die("sql1".mysql_error());
         $row = mysql_fetch_assoc($res);
@@ -32,12 +33,14 @@ mysql_select_db($db, $link);
 	echo $topID;
 
 /******************* Obtenemos el ultimo id marcado de la campania *****************/
+//здесь он вычисляет последний номер, на который звонил
 	$sql="SELECT LastIdDial from Campaign WHERE CampaignName='" .$campname. "'";
         $res=mysql_query($sql,$link) or die("sql1".mysql_error());
         $row = mysql_fetch_assoc($res);
         $lastID = $row['LastIdDial'];
 	echo $lastID;
 /***************** obtenemos el maximo de llamadas a ejecutar ***********************/
+// здесь он вычилсяет максимальное количество одновременных звонков
 	$sql="SELECT MaxCalls from Campaign WHERE CampaignName='" .$campname. "'";
         $res=mysql_query($sql,$link) or die("sql1".mysql_error());
         $row = mysql_fetch_assoc($res);
@@ -54,7 +57,7 @@ mysql_select_db($db, $link);
 
 /************* Movemos los archivos en modo secuencial al spool de asterisk definidos por el rango ********/
 	for( $i=$lastID; $i<=$range; $i++){
-		exec("mv /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* /var/spool/asterisk/outgoing/");
+		exec("mv /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* /var/spool/asterisk/outgoing/");
 	}
 
 /************** Actualizamos el ultimo ID movido al Spool ******************/

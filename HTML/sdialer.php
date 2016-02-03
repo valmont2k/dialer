@@ -32,7 +32,7 @@ mysql_select_db($db, $link);
 
 	for($i=0; $i<$fields_num; $i++){
 		while ($fila = mysql_fetch_assoc($res2)) {
- 			$callfile=fopen("/usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$fila['ID']. "_" .$campname. "_" .$fila['Name']. "" .$fila['LastName']. "_" .$fila['Tel']. ".call","w")or die("error");
+ 			$callfile=fopen("/var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$fila['ID']. "_" .$campname. "_" .$fila['Name']. "" .$fila['LastName']. "_" .$fila['Tel']. ".call","w")or die("error");
 			fputs($callfile,"Channel: LOCAL/s@dialercheck");
 			fputs($callfile,"\n");
 			fputs($callfile,"CallerID:" .$fila['Tel']. "");
@@ -66,33 +66,38 @@ mysql_select_db($db, $link);
 /***************** Кол-во одновременных вызовов ********************/ 
 
  $sqlz="UPDATE Campaign SET MaxCalls='" .$calls. "'  WHERE CampaignName='" .$campname. "'";
+ mysql_query($sqlz,$link) or die("sql3".mysql_error());
  
 /*****************точка приема вызова ENDPOINTS***********************************************************/ 
  $sqlz="UPDATE Campaign SET destination='" .$destination. "'  WHERE CampaignName='" .$campname. "'";
  mysql_query($sqlz,$link) or die("sql3".mysql_error());
 
 /******************* Генерация базового файла уникальной Кампании *************/
- exec("cp /usr/share/asterisk/agi-bin/DialerCamps/maincron.php /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
- exec ("chmod +x /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
- exec ("chown asterisk.asterisk /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ exec("cp /var/lib/asterisk/agi-bin/DialerCamps/maincron.php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ exec ("chmod +x /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ exec ("chown asterisk.asterisk /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
 
 /***************** Генерация SH срипта для выполнения Кампании ***********************/
- $trigger=fopen("/usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh","w")or die("error");
+ $trigger=fopen("/var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh","w")or die("error");
  fputs($trigger,"#!/bin/bash");
  fputs($trigger,"\n");
- fputs($trigger,"cd /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "");
+ fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
  fputs($trigger,"\n");
- fputs($trigger,"/usr/bin/php /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ fputs($trigger,"/usr/bin/php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
  fclose($trigger);
 
 /**************** Права на запуск SH скрипта ***********************/
- exec ("chmod +x /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh");
+ exec ("chmod +x /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh");
  
 /********************** Перемещение Call Files в директорию ./outgoing *****************/
- for($i=0;$i<=$calls;$i++){
-	 exec("mv /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* /var/spool/asterisk/outgoing/");
- }
+// отключено мной!!!!!
+// for($i=0;$i<=$calls;$i++){
+// for($i=0;$i<=$fields_num;$i++){
+//	 exec("mv /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* /var/spool/asterisk/outgoing/");
+// }
 
+//первый звонок отправляем сразу!
+	 exec("mv /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/1_* /var/spool/asterisk/outgoing/");
 
 /*********************** Обновление данных о последнем вызове *****************/
  $lastID = ($lastID + $calls);
@@ -101,7 +106,7 @@ mysql_select_db($db, $link);
 
 /*********************** Añadimos el archivo SH que ejecuta el cron de la campaña al Crontab de asterisk ****/
 $output = shell_exec('crontab -l');
-file_put_contents('/tmp/crontab.txt', $output."*/1 * * * * /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh".PHP_EOL);
+file_put_contents('/tmp/crontab.txt', $output."*/1 * * * * /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh".PHP_EOL);
 echo exec('crontab /tmp/crontab.txt');
 /************************* Se ejecutara cada minuto *********************************/
 

@@ -36,7 +36,8 @@ mysql_select_db($db, $link);
 	$range = $lastID + $calls;
 	
 	for( $i=$lastID; $i<=$range; $i++){
-		exec("mv /usr/share/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* //usr/share/asterisk/agi-bin/DialerCamps/");
+/////		exec("mv /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* //var/lib/asterisk/agi-bin/DialerCamps/");
+		exec("mv /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$i. "_* /var/spool/asterisk/outgoing/");
 	}
 
 

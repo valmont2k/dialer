@@ -102,7 +102,7 @@ echo "<body>";
 		<div id="top">
 			<h1><a href="#">Asterisk Dialer</a></h1>
 			<div id="top-navigation">
-				Welcome <strong><?php echo $_SESSION[name];?></strong>
+				Welcome <strong><?php echo $_SESSION['name'];?></strong>
 				<span>|</span>
 				<a href="#">Help</a>
 				<span>|</span>
