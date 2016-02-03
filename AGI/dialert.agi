@@ -1,0 +1,45 @@
+#!/usr/bin/php -q
+<?php
+set_time_limit(300);
+require('phpagi.php');
+
+require_once("/var/www/html/dialer/config.php");
+
+$link = mysql_connect($host,$user,$pass) or die(mysql_error());
+mysql_select_db($db, $link);
+
+
+$agi = new AGI();
+
+$id=$argv[1];
+$campname=$argv[2];
+$Tel=$argv[3];
+$try=$argv[4];
+$option=0;
+
+	$agi->answer();
+
+
+	$sql1 ="SELECT Tries from " .$campname. "  WHERE NameCamp='" .$campname. "' AND ID='" .$id. "'";
+	$res=mysql_query($sql1,$link) or die(mysql_error());
+	$row = mysql_fetch_assoc($res);
+        $dbtry = $row['Tries'];
+	
+	$trym = $dbtry + $try;
+	
+	$sql="UPDATE " .$campname. " SET Tries='" .$trym. "', CallStatus='Answer', Deliver='No' WHERE NameCamp='" .$campname. "' AND ID='" .$id. "'";
+	$res=mysql_query($sql,$link)or die(mysql_error());
+	
+	$sql1="UPDATE " .$campname. " SET Tries='" .$trym. "', CallStatus='Answer', Deliver='Yes' WHERE NameCamp='" .$campname. "' AND ID='" .$id. "'";
+	$res=mysql_query($sql1,$link)or die(mysql_error());
+	
+    $sql2 = "SELECT destination from Campaign WHERE CampaignName='" .$campname. "'";
+    $res2 = mysql_query($sql2,$link)or die(mysql_error());
+	$row2 = mysql_fetch_assoc($res2);
+	$dest2 = $row2['destination'];
+
+	$agi->exec_dial("Local","$dest2");
+
+
+?>
+
