@@ -9,10 +9,15 @@ http://netcologne.dl.sourceforge.net/project/asteriskautodialer/dialersrc.tar.gz
 MySQL
 
  mysqladmin -u root -p create dialerdb;
+ 
  mysql -u root -p -e "GRANT ALL PRIVILEGES ON dialerdb.* TO user1@localhost IDENTIFIED BY 'pass1';"
+ 
  mysql -u root -p -e "flush privileges;"
+ 
  mysql -u root -p
+ 
  mysql> use dialerdb;
+ 
 DROP TABLE IF EXISTS `Campaign`;
    CREATE TABLE `Campaign` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
