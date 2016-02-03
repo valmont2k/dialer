@@ -24,9 +24,13 @@ echo"	<!-- Box -->
 	<!-- Box Head -->
 	<div class='box-head'>
 	<h2 class=left>Campaign Data</h2>
-	<div class=right>
+	<div class=center>
 	<a href=down.php?q=$q class=add-button><span>Download Data</span></a>
 	<div class=cl>&nbsp;</div>
+	<div class=right>
+	<a href=remove.php?q=$q class=add-button><span>Delete Campaign</span></a>
+	<div class=cl>&nbsp;</div>
+	</div>
 	</div>
 	</div>
 	<form  id='contact-form' >
