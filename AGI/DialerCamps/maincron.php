@@ -10,10 +10,11 @@ echo $campname;
 /************* Verificamos que los Archivos Call que existen en el Spool de nuestra*****************/ 
 /************* campania se hayan ejecutado al menos una vez para mover los demas archivos **********/
 //$exist=exec("ls -lha /var/spool/asterisk/outgoing/ |grep " .$campname. " | grep -c call");
-$exist=exec("grep -c 'StartRetry' *" .$campname. "* | wc -w");
-
+//$exist=exec("grep -c 'StartRetry' *" .$campname. "* | wc -w");
+$exist=exec("/usr/sbin/asterisk -x 'sip show channels'| grep -c multifon");
+echo $exec;
 /************ Si ningun archivo ha sido ejecutado por el spool no enviamos mas llamdas ***********/
-if($exist == 0){
+if($exist >= 1){
 	exit();
 }else{
 

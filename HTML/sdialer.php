@@ -32,7 +32,7 @@ mysql_select_db($db, $link);
 
 	for($i=0; $i<$fields_num; $i++){
 		while ($fila = mysql_fetch_assoc($res2)) {
- 			$callfile=fopen("/var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$fila['ID']. "_" .$campname. "_" .$fila['Name']. "" .$fila['LastName']. "_" .$fila['Tel']. ".call","w")or die("error");
+ 			$callfile=fopen("/var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/" .$fila['ID']. "_" .$campname. "_" .$fila['Tel']. ".call","w")or die("error");
 			fputs($callfile,"Channel: LOCAL/s@dialercheck");
 			fputs($callfile,"\n");
 			fputs($callfile,"CallerID:" .$fila['Tel']. "");
@@ -41,7 +41,7 @@ mysql_select_db($db, $link);
 			fputs($callfile,"\n");
 			fputs($callfile,"RetryTime: " .$retrytime. "");
 			fputs($callfile,"\n");
-			fputs($callfile,"WaitTime: 30");
+			fputs($callfile,"WaitTime: 45");
 			fputs($callfile,"\n");
 			fputs($callfile,"SET: NUM=" .$fila['Tel']. "");
 			fputs($callfile,"\n");
@@ -80,6 +80,30 @@ mysql_select_db($db, $link);
 /***************** Генерация SH срипта для выполнения Кампании ***********************/
  $trigger=fopen("/var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/execd_" .$campname. ".sh","w")or die("error");
  fputs($trigger,"#!/bin/bash");
+ fputs($trigger,"\n");
+ fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
+ fputs($trigger,"\n");
+ fputs($trigger,"/usr/bin/php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ fputs($trigger,"\n");
+ fputs($trigger,"/bin/sleep 10");
+ fputs($trigger,"\n");
+ fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
+ fputs($trigger,"\n");
+ fputs($trigger,"/usr/bin/php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ fputs($trigger,"\n");
+ fputs($trigger,"/bin/sleep 10");
+ fputs($trigger,"\n");
+ fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
+ fputs($trigger,"\n");
+ fputs($trigger,"/usr/bin/php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ fputs($trigger,"\n");
+ fputs($trigger,"/bin/sleep 10");
+ fputs($trigger,"\n");
+ fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
+ fputs($trigger,"\n");
+ fputs($trigger,"/usr/bin/php /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "/cron_" .$campname. ".php");
+ fputs($trigger,"\n");
+ fputs($trigger,"/bin/sleep 10");
  fputs($trigger,"\n");
  fputs($trigger,"cd /var/lib/asterisk/agi-bin/DialerCamps/" .$campname. "");
  fputs($trigger,"\n");

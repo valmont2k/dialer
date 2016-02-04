@@ -3,6 +3,8 @@
 
 $q=$_GET['q'];
 
+
+
 // $con = mysql_connect('localhost', 'dialeruser', 'dialerpass');
 require_once("config.php");
 $con = mysql_connect($host,$user,$pass);
@@ -17,4 +19,14 @@ $con = mysql_connect($host,$user,$pass);
 
  $result = mysql_query($sql)or die(mysql_error());
 
+
+
+echo "Campaign " .$q. " removed!";
+
+
+
+
 ?>
+
+
+result
